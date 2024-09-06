@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 
+import { groupCreate } from "@storage/group/groupCreate";
+
 import { Input } from "@components/Input";
 import { Header } from "@components/Header";
 import { Button } from "@components/Button";
@@ -13,8 +15,13 @@ export const NewGroup = () => {
 
   const [group, setGroup] = useState("");
 
-  const handleNewGroup = () => {
-    navigation.navigate("players", { group });
+  const handleNewGroup = async () => {
+    try {
+      await groupCreate(group);
+      navigation.navigate("players", { group });
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -29,7 +36,7 @@ export const NewGroup = () => {
           subtitle="crie uma turma para adicionar pessoas"
         />
 
-        <Input placeholder="Nome da turma" onChangeText={setGroup}/>
+        <Input placeholder="Nome da turma" onChangeText={setGroup} />
 
         <Button title="Criar" onPress={handleNewGroup} />
       </Content>
