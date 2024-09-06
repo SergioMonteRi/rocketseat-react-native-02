@@ -1,10 +1,8 @@
-import React from "react";
-
 import { ListEmptyProps } from "./types";
 
 import { Container, Message } from "./styles";
 
-const ListEmpty = (props: ListEmptyProps) => {
+export const ListEmpty = (props: ListEmptyProps) => {
   const { message } = props;
 
   return (
@@ -13,5 +11,3 @@ const ListEmpty = (props: ListEmptyProps) => {
     </Container>
   );
 };
-
-export default ListEmpty;

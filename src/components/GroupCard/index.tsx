@@ -1,9 +1,8 @@
-import { View, Text } from "react-native";
 import React from "react";
 import { Container, Icon, Title } from "./styles";
 import { GroupCardProps } from "./types";
 
-const GroupCard = (props: GroupCardProps) => {
+export const GroupCard = (props: GroupCardProps) => {
   const { title, ...rest } = props;
 
   return (
@@ -13,5 +12,3 @@ const GroupCard = (props: GroupCardProps) => {
     </Container>
   );
 };
-
-export default GroupCard;

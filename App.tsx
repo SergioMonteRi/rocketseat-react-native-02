@@ -1,12 +1,10 @@
-import { ThemeProvider } from "styled-components/native";
 import { useFonts } from "expo-font";
 import { StatusBar } from "expo-status-bar";
+import { ThemeProvider } from "styled-components/native";
 
-import {Players} from "@screens/Players";
-import { Groups } from "@screens/Groups";
-import {NewGroup} from "@screens/NewGroup";
+import { Routes } from "@routes/index";
 
-import Loading from "@components/Loading";
+import { Loading } from "@components/Loading";
 
 import theme from "./src/theme";
 
@@ -19,7 +17,7 @@ export default function App() {
   return (
     <ThemeProvider theme={theme}>
       <StatusBar style="light" backgroundColor="transparent" translucent />
-      {fontsLoaded ? <Players /> : <Loading />}
+      {fontsLoaded ? <Routes /> : <Loading />}
     </ThemeProvider>
   );
 }

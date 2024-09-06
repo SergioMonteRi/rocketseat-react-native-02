@@ -1,7 +1,7 @@
 import { Container, Subtitle, Title } from "./styles";
 import { HighlightProps } from "./types";
 
-const Highlight = (props: HighlightProps) => {
+export const Highlight = (props: HighlightProps) => {
   const { title, subtitle } = props;
 
   return (
@@ -11,5 +11,3 @@ const Highlight = (props: HighlightProps) => {
     </Container>
   );
 };
-
-export default Highlight;

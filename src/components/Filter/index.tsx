@@ -1,7 +1,8 @@
 import { FilterProps } from "./types";
+
 import { Container, Title } from "./styles";
 
-const Filter = (props: FilterProps) => {
+export const Filter = (props: FilterProps) => {
   const { title, isActive = false, ...rest } = props;
 
   return (
@@ -11,4 +12,3 @@ const Filter = (props: FilterProps) => {
   );
 };
 
-export default Filter;

@@ -1,10 +1,10 @@
-import ButtonIcon from "@components/ButtonIcon";
+import { ButtonIcon } from "@components/ButtonIcon";
 
 import { PlayerCardProps } from "./types";
 
 import { Container, Icon, Name } from "./styles";
 
-const PlayerCard = (props: PlayerCardProps) => {
+export const PlayerCard = (props: PlayerCardProps) => {
   const { name, onRemove } = props;
 
   return (
@@ -16,4 +16,3 @@ const PlayerCard = (props: PlayerCardProps) => {
   );
 };
 
-export default PlayerCard;

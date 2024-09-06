@@ -2,7 +2,7 @@ import { ButtonIconProps } from "./types";
 
 import { Container, Icon } from "./styles";
 
-const ButtonIcon = (props: ButtonIconProps) => {
+export const ButtonIcon = (props: ButtonIconProps) => {
   const { icon, type = "PRIMARY" } = props;
 
   return (
@@ -11,5 +11,3 @@ const ButtonIcon = (props: ButtonIconProps) => {
     </Container>
   );
 };
-
-export default ButtonIcon;
