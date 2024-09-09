@@ -2,7 +2,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { PLAYER_COLLECTION } from "@storage/storageConfig";
 
-import { PlayerStorageDTO } from "./playerStorageDTO";
+import { PlayerStorageDTO } from "./PlayerStorageDTO";
 
 export const playersGetByGroup = async (group: string) => {
   try {

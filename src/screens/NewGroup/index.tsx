@@ -24,6 +24,8 @@ export const NewGroup = () => {
       }
 
       await groupCreate(group);
+      
+      setGroup("");
       navigation.navigate("players", { group });
     } catch (error) {
       if (error instanceof AppError) {
@@ -48,7 +50,7 @@ export const NewGroup = () => {
           subtitle="crie uma turma para adicionar pessoas"
         />
 
-        <Input placeholder="Nome da turma" onChangeText={setGroup} />
+        <Input placeholder="Nome da turma" onChangeText={setGroup} value={group}/>
 
         <Button title="Criar" onPress={handleNewGroup} />
       </Content>

@@ -11,16 +11,15 @@ export const Container = styled.View`
 
   flex-direction: row;
   align-items: center;
-
-  margin-bottom: 16px;
 `;
+
 
 export const Name = styled.Text`
   flex: 1;
 
   ${({ theme }) => css`
     font-size: ${theme.FONT_SIZE.MD}px;
-    color: ${theme.COLORS.GRAY_200};
+    color: ${theme.COLORS.WHITE};
     font-family: ${theme.FONT_FAMILY.REGULAR};
   `}
 `;

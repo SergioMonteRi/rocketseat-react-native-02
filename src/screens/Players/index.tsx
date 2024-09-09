@@ -1,10 +1,12 @@
-import { useState } from "react";
-import { Alert, FlatList } from "react-native";
-import { useRoute } from "@react-navigation/native";
+import { useEffect, useState, useRef } from "react";
+import { Alert, FlatList, TextInput, Keyboard } from "react-native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 
-import { PlayerStorageDTO } from "@storage/player/playerStorageDTO";
+import { PlayerStorageDTO } from "@storage/player/PlayerStorageDTO";
 import { playerAddByGroup } from "@storage/player/playerAddByGroup";
-import { playersGetByGroup } from "@storage/player/playesGetByGroup";
+import { groupRemoveByName } from "@storage/group/groupRemoveByName";
+import { playerRemoveByGroup } from "@storage/player/playerRemoveByGroup";
+import { playersGetByGroupAndTeam } from "@storage/player/playersGetByGroupAndTeam";
 
 import { AppError } from "@utils/AppError";
 
@@ -12,6 +14,7 @@ import { Input } from "@components/Input";
 import { Filter } from "@components/Filter";
 import { Header } from "@components/Header";
 import { Button } from "@components/Button";
+import { Loading } from "@components/Loading";
 import { ListEmpty } from "@components/ListEmpty";
 import { Highlight } from "@components/Highlight";
 import { ButtonIcon } from "@components/ButtonIcon";
@@ -25,9 +28,14 @@ export const Players = () => {
   const route = useRoute();
   const { group } = route.params as RouteParams;
 
+  const navigation = useNavigation();
+
+  const newPlayerInputRef = useRef<TextInput>(null);
+
   const [team, setTeam] = useState("Time A");
   const [newPlayer, setNewPlayer] = useState("");
-  const [players, setPlayers] = useState<string[]>([]);
+  const [players, setPlayers] = useState<PlayerStorageDTO[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   const handleAddPlayer = async () => {
     try {
@@ -41,25 +49,80 @@ export const Players = () => {
       };
 
       await playerAddByGroup(player, group);
-      const players = await playersGetByGroup(group); 
+      fecthPlayersByTeam();
 
-      Alert.alert("Adicionar jogador", "Jogador adicionado com sucesso");2
+      newPlayerInputRef.current?.blur();
+      Keyboard.dismiss();
 
       setNewPlayer("");
-      console.log(players);
-
     } catch (error) {
       if (error instanceof AppError) {
         Alert.alert("Adicionar jogador", error.message);
         return;
       } else {
-        Alert.alert("Adicionar jogador", "Não foi possível adicionar o jogador");
+        Alert.alert(
+          "Adicionar jogador",
+          "Não foi possível adicionar o jogador"
+        );
         console.log(error);
       }
     }
   };
 
-  console.log(newPlayer);
+  const fecthPlayersByTeam = async () => {
+    try {
+      setIsLoading(true);
+
+      const playersByTeam = await playersGetByGroupAndTeam(group, team);
+
+      setPlayers(playersByTeam ?? []);
+    } catch (error) {
+      Alert.alert("Buscar jogadores", "Não foi possível buscar os jogadores");
+      console.log(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleRemovePlayer = async (player: PlayerStorageDTO) => {
+    try {
+      await playerRemoveByGroup(player, group);
+      fecthPlayersByTeam();
+
+      Alert.alert("Remover jogador", "Jogador removido com sucesso");
+    } catch (error) {
+      Alert.alert("Remover jogador", "Não foi possível remover o jogador");
+      console.log(error);
+    }
+  };
+
+  const handleGroupRemoveConfirm = async () => {
+    try {
+      await groupRemoveByName(group);
+      Alert.alert("Remover turma", "Turma removida com sucesso");
+      navigation.navigate("groups");
+    } catch (error) {
+      Alert.alert("Remover turma", "Não foi possível remover a turma");
+      console.log(error);
+    }
+  };
+
+  const handleGroupRemove = async () => {
+    Alert.alert("Remover turma", "Deseja realmente remover a turma?", [
+      {
+        text: "Cancelar",
+        style: "cancel",
+      },
+      {
+        text: "Remover",
+        onPress: handleGroupRemoveConfirm,
+      },
+    ]);
+  };
+
+  useEffect(() => {
+    fecthPlayersByTeam();
+  }, [team]);
 
   return (
     <Container>
@@ -69,10 +132,13 @@ export const Players = () => {
 
       <Form>
         <Input
+          inputRef={newPlayerInputRef}
           placeholder="Nome da pessoa"
           value={newPlayer}
           onChangeText={setNewPlayer}
           autoCorrect={false}
+          onSubmitEditing={handleAddPlayer}
+          returnKeyType="done"
         />
         <ButtonIcon icon="add" onPress={handleAddPlayer} />
       </Form>
@@ -93,23 +159,35 @@ export const Players = () => {
         <NumberOfPlayers>{players.length}</NumberOfPlayers>
       </HeaderList>
 
-      <FlatList
-        data={players}
-        keyExtractor={(item) => item}
-        renderItem={({ item }) => (
-          <PlayerCard name={item} onRemove={() => {}} />
-        )}
-        ListEmptyComponent={() => (
-          <ListEmpty message="Nenhum jogador adicionado" />
-        )}
-        contentContainerStyle={[
-          { paddingBottom: 100 },
-          players.length === 0 && { flex: 1 },
-        ]}
-        showsVerticalScrollIndicator={false}
-      />
+      {isLoading ? (
+        <Loading />
+      ) : (
+        <FlatList
+          data={players}
+          keyExtractor={(item) => item.name}
+          renderItem={({ item }) => (
+            <PlayerCard
+              name={item.name}
+              onRemove={() => handleRemovePlayer(item)}
+            />
+          )}
+          ListEmptyComponent={() => (
+            <ListEmpty message="Nenhum jogador adicionado" />
+          )}
+          style={{ width: "100%" }}
+          contentContainerStyle={[
+            { paddingBottom: 100, rowGap: 12 },
+            players.length === 0 && { flex: 1 },
+          ]}
+          showsVerticalScrollIndicator={false}
+        />
+      )}
 
-      <Button title="Remover turma" type="SECONDARY" />
+      <Button
+        title="Remover turma"
+        type="SECONDARY"
+        onPress={() => handleGroupRemove()}
+      />
     </Container>
   );
 };

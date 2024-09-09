@@ -4,8 +4,8 @@ import { AppError } from "@utils/AppError";
 
 import { PLAYER_COLLECTION } from "@storage/storageConfig";
 
-import { PlayerStorageDTO } from "./playerStorageDTO";
-import { playersGetByGroup } from "./playesGetByGroup";
+import { PlayerStorageDTO } from "./PlayerStorageDTO";
+import { playersGetByGroup } from "./playersGetByGroup";
 
 export const playerAddByGroup = async (
   newPlayer: PlayerStorageDTO,
@@ -13,7 +13,7 @@ export const playerAddByGroup = async (
 ) => {
   try {
     const storagePlayers = await playersGetByGroup(group);
-
+    
     const playerExists = storagePlayers.find(
       (player) =>
         player.name.toLowerCase() === newPlayer.name.toLocaleLowerCase()
